@@ -8,9 +8,11 @@ from langchain.document_loaders import DirectoryLoader, TextLoader
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.indexes import VectorstoreIndexCreator
 from langchain.indexes.vectorstore import VectorStoreIndexWrapper
-from langchain.llms import OpenAI
+from langchain.llms import OpenAILanguageModel
+from langchain.retrievers import VectorstoreRetriever
+from langchain.vectorstores import VectorStore
 from langchain.vectorstores import Chroma
-
+from json_loader import loader
 import constants
 
 os.environ["OPENAI_API_KEY"] = constants.APIKEY
@@ -27,8 +29,7 @@ if PERSIST and os.path.exists("persist"):
   vectorstore = Chroma(persist_directory="persist", embedding_function=OpenAIEmbeddings())
   index = VectorStoreIndexWrapper(vectorstore=vectorstore)
 else:
-  #loader = TextLoader("data/data.txt") # Use this line if you only need data.txt
-  loader = DirectoryLoader("data/")
+
   if PERSIST:
     index = VectorstoreIndexCreator(vectorstore_kwargs={"persist_directory":"persist"}).from_loaders([loader])
   else:
